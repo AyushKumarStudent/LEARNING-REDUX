@@ -8,8 +8,8 @@
 
 
 // Action Creators
-export function addToCart(productId, quantity) {
-    return { type: 'cart/addToCart', payload: { productId: productId, quantity: quantity } }
+export function addToCart(productData) {
+    return { type: 'cart/addToCart', payload: { ...productData, quantity: 1 } }
 }
 
 export function removeFromCart(productId) {
@@ -17,11 +17,11 @@ export function removeFromCart(productId) {
 }
 
 export function increaseCartItemQuantity(productId) {
-    return { type: 'cart/increaseCartItemQuantity', payload: { productId: "2" } }
+    return { type: 'cart/increaseCartItemQuantity', payload: { productId: productId } }
 }
 
 export function decreaseCartItemQuantity(productId) {
-    return { type: 'cart/decreaseCartItemQuantity', payload: { productId: "2" } }
+    return { type: 'cart/decreaseCartItemQuantity', payload: { productId: productId } }
 }
 
 // Reducer
@@ -29,6 +29,15 @@ export function decreaseCartItemQuantity(productId) {
 function cartReducer(state = [], { type, payload }) {
     switch (type) {
         case 'cart/addToCart':
+            const existingItem = state.find((cartItem) => cartItem.productId === payload.productId);
+            if (existingItem) {
+                return [...state.map((cartItem) => {
+                    if (cartItem.productId === payload.productId) {
+                        return { ...cartItem, quantity: cartItem.quantity += 1 }
+                    }
+                    return cartItem;
+                })]
+            }
             return [...state, payload]
         case 'cart/removeFromCart':
             return state?.filter((cartItem) => cartItem.productId != payload.productId)
