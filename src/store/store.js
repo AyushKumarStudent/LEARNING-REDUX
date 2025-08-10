@@ -1,8 +1,8 @@
-import { createStore, combineReducers } from "redux";
 import { products } from "../api/products";
-import productsReducer from "./productsReducer";
-import cartReducer from "./cartReducer";
-import wishlistReducer from "./wishlistReducer";
+import productsReducer from "./slices/productsSlice";
+import cartReducer from "./slices/cartSlice";
+import wishlistReducer from "./slices/wishlistSlice";
+import { configureStore } from "@reduxjs/toolkit";
 
 /* const initialState = {
     products: products,
@@ -12,13 +12,14 @@ import wishlistReducer from "./wishlistReducer";
 
 // combine reducers combines multiple reducers into one
 // initial state can be considered as the initial state of the combined reducer
-const reducer = combineReducers({
-    products: productsReducer,
-    cartItems: cartReducer,
-    wishlist: wishlistReducer
-})
 
-const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__?.());
+const store = configureStore({
+    reducer: {
+        products: productsReducer,
+        cartItems: cartReducer,
+        wishlist: wishlistReducer
+    }
+});
 
 
 export default store;

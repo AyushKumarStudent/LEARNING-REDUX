@@ -19,7 +19,7 @@ export default function Cart() {
                 </div>
                 {cartItems.map(({ productId, title, rating, price, imageUrl, quantity }) => (
                     <CartItem
-                        id={productId}
+                        productId={productId}
                         key={productId}
                         title={title}
                         price={price}
@@ -29,9 +29,6 @@ export default function Cart() {
                     />
                 ))}
                 <div className="cart-header cart-item-container">
-                    <div></div>
-                    <div></div>
-                    <div></div>
                     <div className="total">{total}</div>
                 </div>
             </div>
