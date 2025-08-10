@@ -8,20 +8,39 @@ import { fetchCartItems, fetchCartError, loadAllCartItems } from '../store/slice
 export default function Header() {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(fetchProducts());
-        fetch("https://fakestoreapi.com/products").then((res) => res.json())
-            .then((products) => dispatch(loadAllProducts(products)))
-            .catch((e) => {
-                dispatch(fetchProductsError())
-            })
+        dispatch({
+            type: "api/makeCall",
+            payload: {
+                URL: "/products",
+                onStart: fetchProducts.type,
+                onSuccess: loadAllProducts.type,
+                onError: fetchProductsError.type,
+            }
+        })
+        dispatch({
+            type: "api/makeCall",
+            payload: {
+                URL: "/carts/5",
+                onStart: fetchCartItems.type,
+                onSuccess: loadAllCartItems.type,
+                onError: fetchCartError.type,
+            }
+        })
 
-        dispatch(fetchCartItems());
+        // dispatch(fetchProducts());
+        // fetch("https://fakestoreapi.com/products").then((res) => res.json())
+        //     .then((products) => dispatch(loadAllProducts(products)))
+        //     .catch((e) => {
+        //         dispatch(fetchProductsError())
+        //     })
 
-        fetch("https://fakestoreapi.com/carts/5").then((res) => res.json())
-            .then((cartItems) => dispatch(loadAllCartItems(cartItems)))
-            .catch((e) => {
-                dispatch(fetchCartError())
-            })
+        // dispatch(fetchCartItems());
+
+        // fetch("https://fakestoreapi.com/carts/5").then((res) => res.json())
+        //     .then((cartItems) => dispatch(loadAllCartItems(cartItems)))
+        //     .catch((e) => {
+        //         dispatch(fetchCartError())
+        // })
 
 
         return () => {
