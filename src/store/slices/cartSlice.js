@@ -69,9 +69,15 @@ const getAllCart = (products, cartItems) => {
 }
 
 export const getAllCartItems = createSelector([getProducts, getCartItems], getAllCart)
-
 export const getCartLoadingState = (state) => state.cartItems.loading
 export const getCartErrorState = (state) => state.cartItems.error
+
+export const fetchCartItemsData = () => (dispatch) => {
+    dispatch(fetchCartItems())
+    fetch('https://fakestoreapi.com/carts/5').then((res) => res.json())
+        .then((data) => dispatch(loadAllCartItems(data)))
+        .catch((e) => dispatch(fetchCartError()))
+}
 
 
 export const { fetchCartItems, fetchCartError, loadAllCartItems, addToCart, removeFromCart, increaseCartItemQuantity, decreaseCartItemQuantity } = slice.actions;
