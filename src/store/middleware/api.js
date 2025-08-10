@@ -21,3 +21,8 @@ const apiMiddleware = ({ dispatch }) => (next) => (action) => {
     }
 }
 export default apiMiddleware
+
+// API action creator
+export function fetchData(payload) {
+    return { type: "api/makeCall", payload }
+}

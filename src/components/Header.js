@@ -4,44 +4,33 @@ import CartIcon from '../assets/cart-icon.svg'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchProducts, fetchProductsError, loadAllProducts } from '../store/slices/productsSlice';
 import { fetchCartItems, fetchCartError, loadAllCartItems } from '../store/slices/cartSlice';
+import { fetchData } from '../store/middleware/api';
 
 export default function Header() {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch({
-            type: "api/makeCall",
-            payload: {
+
+        dispatch(
+            fetchData({
                 URL: "/products",
                 onStart: fetchProducts.type,
                 onSuccess: loadAllProducts.type,
                 onError: fetchProductsError.type,
-            }
-        })
-        dispatch({
-            type: "api/makeCall",
-            payload: {
+            })
+        )
+
+        dispatch(
+            fetchData({
                 URL: "/carts/5",
                 onStart: fetchCartItems.type,
                 onSuccess: loadAllCartItems.type,
                 onError: fetchCartError.type,
-            }
+            })
+        )
+
+        dispatch(() => {
+            console.log("hello")
         })
-
-        // dispatch(fetchProducts());
-        // fetch("https://fakestoreapi.com/products").then((res) => res.json())
-        //     .then((products) => dispatch(loadAllProducts(products)))
-        //     .catch((e) => {
-        //         dispatch(fetchProductsError())
-        //     })
-
-        // dispatch(fetchCartItems());
-
-        // fetch("https://fakestoreapi.com/carts/5").then((res) => res.json())
-        //     .then((cartItems) => dispatch(loadAllCartItems(cartItems)))
-        //     .catch((e) => {
-        //         dispatch(fetchCartError())
-        // })
-
 
         return () => {
 

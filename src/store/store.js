@@ -4,6 +4,7 @@ import cartReducer from "./slices/cartSlice";
 import wishlistReducer from "./slices/wishlistSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import apiMiddleware from "./middleware/api";
+import { func } from "./middleware/func"; //Cursom Middleware || Thunk
 /* const initialState = {
     products: products,
     cartItems: [],
@@ -18,7 +19,7 @@ const store = configureStore({
         cartItems: cartReducer,
         wishlist: wishlistReducer
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiMiddleware),
+    middleware: (getDefaultMiddleware) => [...getDefaultMiddleware(), apiMiddleware, func],
 });
 
 
