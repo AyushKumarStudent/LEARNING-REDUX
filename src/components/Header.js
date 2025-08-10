@@ -1,11 +1,36 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import CartIcon from '../assets/cart-icon.svg'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchProducts, fetchProductsError, loadAllProducts } from '../store/slices/productsSlice';
+import { fetchCartItems, fetchCartError, loadAllCartItems } from '../store/slices/cartSlice';
 
 export default function Header() {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchProducts());
+        fetch("https://fakestoreapi.com/products").then((res) => res.json())
+            .then((products) => dispatch(loadAllProducts(products)))
+            .catch((e) => {
+                dispatch(fetchProductsError())
+            })
+
+        dispatch(fetchCartItems());
+
+        fetch("https://fakestoreapi.com/carts/5").then((res) => res.json())
+            .then((cartItems) => dispatch(loadAllCartItems(cartItems)))
+            .catch((e) => {
+                dispatch(fetchCartError())
+            })
+
+
+        return () => {
+
+        };
+    }, []);
+
     const cartItems = useSelector(state => state.cartItems);
-    const cartItemsLength = cartItems.reduce((acc, currentItem) => acc += currentItem.quantity, 0)
+    const cartItemsLength = cartItems.list.reduce((acc, currentItem) => acc += currentItem.quantity, 0)
     return (
         <header>
             <div className="header-contents">

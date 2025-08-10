@@ -3,6 +3,7 @@ import productsReducer from "./slices/productsSlice";
 import cartReducer from "./slices/cartSlice";
 import wishlistReducer from "./slices/wishlistSlice";
 import { configureStore } from "@reduxjs/toolkit";
+import { logger } from "./middleware/logger"
 
 /* const initialState = {
     products: products,
@@ -10,15 +11,15 @@ import { configureStore } from "@reduxjs/toolkit";
     wishlist: [],
 } */
 
-// combine reducers combines multiple reducers into one
-// initial state can be considered as the initial state of the combined reducer
+
 
 const store = configureStore({
     reducer: {
         products: productsReducer,
         cartItems: cartReducer,
         wishlist: wishlistReducer
-    }
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });
 
 

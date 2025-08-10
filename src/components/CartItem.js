@@ -21,7 +21,7 @@ export default function CartItem({ productId, title, rating, price, imageUrl, qu
                 <button onClick={() => dispatch(removeFromCart({ productId }))}>Remove</button>
             </div>
 
-            <div className="item-total">${Number(quantity * price.toFixed(2))}</div>
+            <div className="item-total">${Number(quantity * price?.toFixed(2))}</div>
         </div>
     )
 }

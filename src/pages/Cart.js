@@ -1,11 +1,13 @@
 import React from 'react'
 import CartItem from '../components/CartItem'
 import { useSelector } from 'react-redux'
-
+import { getAllCartItems, getCartLoadingState, getCartErrorState } from '../store/slices/cartSlice';
 export default function Cart() {
+    const isLoading = useSelector(getCartLoadingState);
+    const error = useSelector(getCartErrorState);
 
-    const cartItems = useSelector(state => state.cartItems)
-    const total = Number(cartItems.reduce((acc, { quantity, price }) => acc += (quantity * price), 0).toFixed(2))
+    const cartItems = useSelector(getAllCartItems)
+    const total = Number(cartItems?.reduce((acc, { quantity, price }) => acc += (quantity * price), 0)?.toFixed(2))
 
     return (
         <div className="cart-container">
@@ -17,20 +19,20 @@ export default function Cart() {
                     <div className="quantity">Quantity</div>
                     <div className="total">Total</div>
                 </div>
-                {cartItems.map(({ productId, title, rating, price, imageUrl, quantity }) => (
+                {error ? <h2>{error}</h2> : isLoading ? <h2>Loading.......</h2> : cartItems?.map(({ id, title, rating, price, image, quantity }) => (
                     <CartItem
-                        productId={productId}
-                        key={productId}
+                        productId={id}
+                        key={id}
                         title={title}
                         price={price}
                         quantity={quantity}
-                        imageUrl={imageUrl}
-                        rating={rating}
+                        imageUrl={image}
+                        rating={rating.rate}
                     />
                 ))}
-                <div className="cart-header cart-item-container">
-                    <div className="total">{total}</div>
-                </div>
+                {!isLoading && !error && <div className="cart-header cart-item-container">
+                    <div className="total">${total}</div>
+                </div>}
             </div>
         </div>
     )
