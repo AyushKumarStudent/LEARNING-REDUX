@@ -32,8 +32,6 @@ const slice = createSlice({
             state[existingItemIndex].quantity += 1
         },
         decreaseCartItemQuantity(state, { type, payload }) {
-            console.log('type', type)
-            console.log('payload', payload)
             const existingItemIndex = findItemIndex(state, payload.productId);
             state[existingItemIndex].quantity -= 1
             if (state[existingItemIndex].quantity === 0) {
