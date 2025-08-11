@@ -5,7 +5,7 @@
  * export CART_REMOVE_FROM_CART: 'cart/increaseCartItemQuantity'
 */
 
-import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit";
 
 function findItemIndex(state, productId) {
     return state.list.findIndex((cartItem) => cartItem.productId === productId);
@@ -19,17 +19,6 @@ const slice = createSlice({
         error: ""
     },
     reducers: {
-        fetchCartItems(state) {
-            state.loading = true;
-        },
-        fetchCartError(state, { payload }) {
-            state.loading = false;
-            state.error = payload || "Something went wrong";
-        },
-        loadAllCartItems(state, action) {
-            state.loading = false;
-            state.list = action.payload.products
-        },
         addToCart(state, { type, payload }) {
             const existingItemIndex = findItemIndex(state, payload.productId);
             if (existingItemIndex !== -1) {
@@ -53,7 +42,17 @@ const slice = createSlice({
                 state.list.splice(existingItemIndex, 1);
             }
         }
-
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchCartData.pending, (state) => {
+            state.loading = true
+        }).addCase(fetchCartData.fulfilled, (state, action) => {
+            state.loading = false;
+            state.list = action.payload.products;
+        }).addCase(fetchCartData.rejected, (state, { payload }) => {
+            state.loading = false;
+            state.error = payload || "Something went wrong";
+        })
     }
 })
 
@@ -72,15 +71,16 @@ export const getAllCartItems = createSelector([getProducts, getCartItems], getAl
 export const getCartLoadingState = (state) => state.cartItems.loading
 export const getCartErrorState = (state) => state.cartItems.error
 
-export const fetchCartItemsData = () => (dispatch) => {
-    dispatch(fetchCartItems())
-    fetch('https://fakestoreapi.com/carts/5').then((res) => res.json())
-        .then((data) => dispatch(loadAllCartItems(data)))
-        .catch((e) => dispatch(fetchCartError()))
-}
+export const fetchCartData = createAsyncThunk('cart/fetchCartItems', async () => {
+    try {
+        const response = await fetch('https://fakestoreapi.com/carts/5');
+        return response.json();
+    } catch (error) {
+        throw new Error(error);
+    }
+})
 
-
-export const { fetchCartItems, fetchCartError, loadAllCartItems, addToCart, removeFromCart, increaseCartItemQuantity, decreaseCartItemQuantity } = slice.actions;
+export const { addToCart, removeFromCart, increaseCartItemQuantity, decreaseCartItemQuantity } = slice.actions;
 
 
 export default slice.reducer

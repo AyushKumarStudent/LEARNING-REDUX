@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const slice = createSlice({
     name: "products",
@@ -7,20 +7,18 @@ const slice = createSlice({
         list: [],
         error: ''
     },
-    reducers: {
-        fetchProducts(state) {
+    extraReducers: ((builder) => {
+        builder.addCase(fetchProductsData.pending, (state) => {
             state.loading = true
-        },
-        fetchProductsError(state, { payload }) {
-            state.loading = false;
-            state.error = payload || "Something went wrong";
-        },
-        loadAllProducts(state, { type, payload }) {
+        }).addCase(fetchProductsData.fulfilled, (state, { payload }) => {
             state.loading = false
             state.list = payload
             state.error = "";
-        }
-    }
+        }).addCase(fetchProductsData.rejected, (state, { payload }) => {
+            state.loading = false;
+            state.error = payload || "Something went wrong";
+        })
+    })
 })
 
 
@@ -31,14 +29,9 @@ export const getProductsLoadingState = (state) => state.products.loading
 export const getProductsErrorState = (state) => state.products.error
 
 
-const { loadAllProducts, fetchProducts, fetchProductsError } = slice.actions;
-
-
-export const fetchProductsData = () => (dispatch) => {
-    dispatch(fetchProducts())
-    fetch('https://fakestoreapi.com/products').then((res) => res.json())
-        .then((data) => dispatch(loadAllProducts(data)))
-        .catch((e) => dispatch(fetchProductsError()))
-}
+export const fetchProductsData = createAsyncThunk("products/fetchProducts", async () => {
+    const response = await fetch('https://fakestoreapi.com/products');
+    return response.json();
+})
 
 export default slice.reducer
