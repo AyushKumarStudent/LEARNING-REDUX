@@ -1,4 +1,3 @@
-import { products } from "../api/products";
 import productsReducer from "./slices/productsSlice";
 import cartReducer from "./slices/cartSlice";
 import wishlistReducer from "./slices/wishlistSlice";
@@ -20,7 +19,7 @@ const store = configureStore({
         cartItems: cartReducer,
         wishlist: wishlistReducer
     },
-    middleware: (getDefaultMiddleware) => [...getDefaultMiddleware(), logger],
+    middleware: (getDefaultMiddleware) => [...getDefaultMiddleware(), logger, func],
 });
 
 
